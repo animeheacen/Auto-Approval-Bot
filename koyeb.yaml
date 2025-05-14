@@ -1,0 +1,41 @@
+services:
+  - name: approval-web
+    ports:
+      - port: 8000
+        http: {}
+    env:
+      - name: API_ID
+        value: ${{TELEGRAM_API_ID}}
+      - name: API_HASH
+        value: ${{TELEGRAM_API_HASH}}
+      - name: BOT_TOKEN
+        value: ${{BOT_TOKEN}}
+      - name: MONGO_URI
+        value: ${{MONGODB_URI}}
+    docker:
+      image: python:3.9-slim
+      command: 
+        - sh
+        - -c
+        - |
+          pip install -r requirements.txt
+          gunicorn --bind 0.0.0.0:8000 app:app
+
+  - name: approval-bot
+    env:
+      - name: API_ID
+        value: ${{TELEGRAM_API_ID}}
+      - name: API_HASH
+        value: ${{TELEGRAM_API_HASH}}
+      - name: BOT_TOKEN
+        value: ${{BOT_TOKEN}}
+      - name: MONGO_URI
+        value: ${{MONGODB_URI}}
+    docker:
+      image: python:3.9-slim
+      command:
+        - sh
+        - -c
+        - |
+          pip install -r requirements.txt
+          python bot.py
