@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: approval-web
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
+    envVars:
+      - key: API_ID
+        value: ${{TELEGRAM_API_ID}}
+      - key: API_HASH
+        value: ${{TELEGRAM_API_HASH}}
+      - key: BOT_TOKEN
+        value: ${{BOT_TOKEN}}
+      - key: MONGO_URI
+        value: ${{MONGODB_URI}}
+
+  - type: worker
+    name: approval-bot
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python bot.py
+    envVars:
+      - key: API_ID
+        value: ${{TELEGRAM_API_ID}}
+      - key: API_HASH
+        value: ${{TELEGRAM_API_HASH}}
+      - key: BOT_TOKEN
+        value: ${{BOT_TOKEN}}
+      - key: MONGO_URI
+        value: ${{MONGODB_URI}}
